@@ -43,8 +43,8 @@ public class BigItemRenderer implements BuiltinItemRendererRegistry.DynamicItemR
 			applyProfiler.push("listener");
 			final MinecraftClient client = MinecraftClient.getInstance();
 			this.itemRenderer = client.getItemRenderer();
-			this.inventoryModel = client.getBakedModelManager().getModel(new ModelIdentifier(this.itemId + "_gui", "inventory"));
-			this.worldModel = client.getBakedModelManager().getModel(new ModelIdentifier(this.itemId + "_handheld", "inventory"));
+			this.inventoryModel = client.getBakedModelManager().getModel(new ModelIdentifier(new Identifier(this.itemId + "_gui"), "inventory"));
+			this.worldModel = client.getBakedModelManager().getModel(new ModelIdentifier(new Identifier(this.itemId + "_handheld"), "inventory"));
 			applyProfiler.pop();
 			applyProfiler.endTick();
 		}, applyExecutor);

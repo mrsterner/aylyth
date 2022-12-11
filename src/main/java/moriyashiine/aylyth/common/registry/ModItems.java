@@ -3,14 +3,15 @@ package moriyashiine.aylyth.common.registry;
 import moriyashiine.aylyth.common.Aylyth;
 import moriyashiine.aylyth.common.item.*;
 import moriyashiine.aylyth.common.registry.util.ItemWoodSuite;
-import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.registry.CompostingChanceRegistry;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.item.*;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Rarity;
-import net.minecraft.util.registry.Registry;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -18,14 +19,18 @@ import java.util.Map;
 public class ModItems {
 	public static final Map<Item, Identifier> ITEMS = new LinkedHashMap<>();
 
-
-	public static final ItemGroup GROUP = FabricItemGroupBuilder.build(new Identifier(Aylyth.MOD_ID, Aylyth.MOD_ID), () -> new ItemStack(ModItems.YMPE_DAGGER));
+	public static final ItemGroup GROUP = FabricItemGroup.builder(new Identifier(Aylyth.MOD_ID, Aylyth.MOD_ID))
+			.icon(() -> new ItemStack(ModItems.YMPE_DAGGER)).entries((enabledFeatures, entries, operatorEnabled) -> {
+				for(Item item : ITEMS.keySet()) {
+					entries.add(item);
+				}
+			}).build();
 
 	public static final Item DEBUG_WAND = register("debug_wand", new DebugWandItem(new FabricItemSettings()));
 	public static final Item FRUIT_BEARING_YMPE_LOG = register("fruit_bearing_ympe_log", new BlockItem(ModBlocks.FRUIT_BEARING_YMPE_LOG, settings()));
 
 	public static final Item YMPE_LEAVES = register("ympe_leaves",new BlockItem(ModBlocks.YMPE_LEAVES, settings()));
-	public static final ItemWoodSuite YMPE_ITEMS = ItemWoodSuite.of(new Identifier(Aylyth.MOD_ID, "ympe"), ModBlocks.YMPE_BLOCKS, new ItemWoodSuite.GroupedSettings(GROUP), Registry.ITEM, () -> ModBoatTypes.YMPE_BOAT_TYPE, () -> ModBoatTypes.YMPE_CHEST_BOAT_TYPE);
+	public static final ItemWoodSuite YMPE_ITEMS = ItemWoodSuite.of(new Identifier(Aylyth.MOD_ID, "ympe"), ModBlocks.YMPE_BLOCKS, new ItemWoodSuite.GroupedSettings(GROUP), Registries.ITEM, () -> ModBoatTypes.YMPE_BOAT_TYPE, () -> ModBoatTypes.YMPE_CHEST_BOAT_TYPE);
 
 	public static final Item POMEGRANATE_LEAVES = register("pomegranate_leaves", new BlockItem(ModBlocks.POMEGRANATE_LEAVES, settings()));
 	public static final ItemWoodSuite POMEGRANATE_ITEMS = ItemWoodSuite.of(new Identifier(Aylyth.MOD_ID, "pomegranate"), ModBlocks.POMEGRANATE_BLOCKS, new ItemWoodSuite.GroupedSettings(GROUP), Registry.ITEM, () -> ModBoatTypes.POMEGRANATE_BOAT_TYPE, () -> ModBoatTypes.POMEGRANATE_CHEST_BOAT_TYPE);
@@ -88,11 +93,11 @@ public class ModItems {
 
 
 	private static Item.Settings settings() {
-		return new FabricItemSettings().group(GROUP);
+		return new FabricItemSettings();
 	}
 
 	public static void init() {
-		ITEMS.keySet().forEach(item -> Registry.register(Registry.ITEM, ITEMS.get(item), item));
+		ITEMS.keySet().forEach(item -> Registry.register(Registries.ITEM, ITEMS.get(item), item));
 		YMPE_ITEMS.register();
 		POMEGRANATE_ITEMS.register();
 		WRITHEWOOD_ITEMS.register();

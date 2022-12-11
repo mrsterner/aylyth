@@ -24,18 +24,20 @@ import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib.core.animatable.GeoAnimatable;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
-public class ElderAylythianEntity extends HostileEntity implements IAnimatable {
+public class ElderAylythianEntity extends HostileEntity implements GeoAnimatable {
 	public static final TrackedData<Integer> VARIANT = DataTracker.registerData(ElderAylythianEntity.class, TrackedDataHandlerRegistry.INTEGER);
 	public static final int VARIANTS = 3;
-	
-	private final AnimationFactory factory = new AnimationFactory(this);
+
+	private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 	
 	public ElderAylythianEntity(EntityType<? extends HostileEntity> entityType, World world) {
 		super(entityType, world);
@@ -45,39 +47,8 @@ public class ElderAylythianEntity extends HostileEntity implements IAnimatable {
 		return MobEntity.createMobAttributes().add(EntityAttributes.GENERIC_MAX_HEALTH, 100).add(EntityAttributes.GENERIC_ATTACK_DAMAGE, 13).add(EntityAttributes.GENERIC_ARMOR, 6).add(EntityAttributes.GENERIC_MOVEMENT_SPEED, 0.25).add(EntityAttributes.GENERIC_FOLLOW_RANGE, 32);
 	}
 	
-	@Override
-	public void registerControllers(AnimationData animationData) {
-		animationData.addAnimationController(new AnimationController<>(this, "controller", 10, animationEvent -> {
-			float limbSwingAmount = Math.abs(animationEvent.getLimbSwingAmount());
-			AnimationBuilder builder = new AnimationBuilder();
-			if (limbSwingAmount > 0.01F) {
-				if (limbSwingAmount > 0.6F) {
-					builder.addAnimation("run", true);
-				}
-				else {
-					builder.addAnimation("walk", true);
-				}
-			}
-			else {
-				builder.addAnimation("idle", true);
-			}
-			animationEvent.getController().setAnimation(builder);
-			return PlayState.CONTINUE;
-		}));
-		animationData.addAnimationController(new AnimationController<>(this, "arms", 0, animationEvent -> {
-			AnimationBuilder builder = new AnimationBuilder();
-			if (handSwingTicks > 0 && !isDead()) {
-				animationEvent.getController().setAnimation(builder.addAnimation("clawswipe", true));
-				return PlayState.CONTINUE;
-			}
-			return PlayState.STOP;
-		}));
-	}
-	
-	@Override
-	public AnimationFactory getFactory() {
-		return factory;
-	}
+
+
 	
 	@Nullable
 	@Override
@@ -191,5 +162,48 @@ public class ElderAylythianEntity extends HostileEntity implements IAnimatable {
 	@Override
 	public EntityGroup getGroup() {
 		return EntityGroup.UNDEAD;
+	}
+
+	@Override
+	public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+		controllers.add(
+				new AnimationController<>(this, "Body", 1, this::poseBody),
+				new AnimationController<>(this, "Arms", 5, this::poseArms)
+		);
+	}
+
+	private <T extends GeoAnimatable> PlayState poseArms(AnimationState<T> state) {
+		if (handSwingTicks > 0 && !isDead()) {
+			state.setAnimation(RawAnimation.begin().thenLoop("clawswipe"));
+			return PlayState.CONTINUE;
+		}
+		return PlayState.STOP;
+	}
+
+	private <T extends GeoAnimatable> PlayState poseBody(AnimationState<T> state) {
+		float limbSwingAmount = Math.abs(state.getLimbSwingAmount());
+		if (limbSwingAmount > 0.01F) {
+			if (limbSwingAmount > 0.6F) {
+				state.setAnimation(RawAnimation.begin().thenLoop("run"));
+			}
+			else {
+				state.setAnimation(RawAnimation.begin().thenLoop("walk"));
+			}
+		}
+		else {
+			state.setAnimation(RawAnimation.begin().thenLoop("idle"));
+		}
+		return PlayState.CONTINUE;
+	}
+
+
+	@Override
+	public AnimatableInstanceCache getAnimatableInstanceCache() {
+		return cache;
+	}
+
+	@Override
+	public double getTick(Object o) {
+		return ((Entity)o).age;
 	}
 }

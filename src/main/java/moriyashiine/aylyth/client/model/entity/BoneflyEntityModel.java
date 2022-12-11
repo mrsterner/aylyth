@@ -3,12 +3,9 @@ package moriyashiine.aylyth.client.model.entity;
 import moriyashiine.aylyth.common.Aylyth;
 import moriyashiine.aylyth.common.entity.mob.BoneflyEntity;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
-import software.bernie.geckolib3.model.provider.data.EntityModelData;
+import software.bernie.geckolib.model.GeoModel;
 
-public class BoneflyEntityModel extends AnimatedGeoModel<BoneflyEntity> {
+public class BoneflyEntityModel extends GeoModel<BoneflyEntity> {
     public BoneflyEntityModel() {
     }
 
@@ -24,6 +21,7 @@ public class BoneflyEntityModel extends AnimatedGeoModel<BoneflyEntity> {
         return new Identifier(Aylyth.MOD_ID, "animations/entity/bonefly.animation.json");
     }
 
+    /*TODO
     public void setLivingAnimations(BoneflyEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
         super.setLivingAnimations(entity, uniqueID, customPredicate);
         EntityModelData extraData = (EntityModelData)customPredicate.getExtraDataOfType(EntityModelData.class).get(0);
@@ -46,4 +44,6 @@ public class BoneflyEntityModel extends AnimatedGeoModel<BoneflyEntity> {
         }
 
     }
+
+     */
 }

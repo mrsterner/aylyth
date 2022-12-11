@@ -10,9 +10,9 @@ import net.minecraft.recipe.Recipe;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.recipe.ShapedRecipe;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
 public class YmpeDaggerDropRecipe implements Recipe<Inventory> {
@@ -72,7 +72,7 @@ public class YmpeDaggerDropRecipe implements Recipe<Inventory> {
 		public YmpeDaggerDropRecipe read(Identifier id, JsonObject json) {
 			return new YmpeDaggerDropRecipe(
 					id,
-					Registry.ENTITY_TYPE.get(new Identifier(JsonHelper.getString(json, "entity_type"))),
+					Registries.ENTITY_TYPE.get(new Identifier(JsonHelper.getString(json, "entity_type"))),
 					ShapedRecipe.outputFromJson(JsonHelper.getObject(json, "result")),
 					JsonHelper.getFloat(json, "chance"),
 					JsonHelper.getInt(json, "min"),
@@ -84,7 +84,7 @@ public class YmpeDaggerDropRecipe implements Recipe<Inventory> {
 		public YmpeDaggerDropRecipe read(Identifier id, PacketByteBuf buf) {
 			return new YmpeDaggerDropRecipe(
 					id,
-					Registry.ENTITY_TYPE.get(new Identifier(buf.readString())),
+					Registries.ENTITY_TYPE.get(new Identifier(buf.readString())),
 					buf.readItemStack(),
 					buf.readFloat(),
 					buf.readInt(),
@@ -94,7 +94,7 @@ public class YmpeDaggerDropRecipe implements Recipe<Inventory> {
 		
 		@Override
 		public void write(PacketByteBuf buf, YmpeDaggerDropRecipe recipe) {
-			buf.writeString(Registry.ENTITY_TYPE.getId(recipe.entity_type).toString());
+			buf.writeString(Registries.ENTITY_TYPE.getId(recipe.entity_type).toString());
 			buf.writeItemStack(recipe.getOutput());
 			buf.writeFloat(recipe.chance);
 			buf.writeInt(recipe.min);

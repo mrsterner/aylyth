@@ -16,9 +16,9 @@ public class ShuckingRecipe extends ShapelessRecipe {
 	private static final Random RANDOM = Random.create();
 	
 	public ShuckingRecipe(ShapelessRecipe recipe) {
-		super(recipe.getId(), recipe.getGroup(), recipe.getOutput(), recipe.getIngredients());
+		super(recipe.getId(), recipe.getGroup(), recipe.getCategory(), recipe.getOutput(), recipe.getIngredients());
 	}
-	
+
 	@Override
 	public DefaultedList<ItemStack> getRemainder(CraftingInventory inventory) {
 		DefaultedList<ItemStack> defaultedList = DefaultedList.ofSize(inventory.size(), ItemStack.EMPTY);

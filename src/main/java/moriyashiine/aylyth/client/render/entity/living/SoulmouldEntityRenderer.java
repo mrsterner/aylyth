@@ -11,21 +11,21 @@ import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Vec3f;
-import software.bernie.geckolib3.geo.render.built.GeoBone;
-import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
+import software.bernie.example.client.renderer.entity.layer.CoolKidGlassesLayer;
+import software.bernie.geckolib.cache.object.GeoBone;
+import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 public class SoulmouldEntityRenderer extends GeoEntityRenderer<SoulmouldEntity> {
     public SoulmouldEntityRenderer(EntityRendererFactory.Context ctx) {
         super(ctx, new SoulmouldEntityModel());
-        this.addLayer(new SoulmouldEyesLayer(this));
+        addRenderLayer(new SoulmouldEyesLayer(this));
     }
 
     public RenderLayer getRenderType(SoulmouldEntity animatable, float partialTicks, MatrixStack stack, VertexConsumerProvider renderTypeBuffer, VertexConsumer vertexBuilder, int packedLightIn, Identifier textureLocation) {
         return RenderLayer.getEntityTranslucent(textureLocation, true);
     }
 
-
+/*TODO
     @Override
     public void renderRecursively(GeoBone bone, MatrixStack stack, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         if (bone.getName().equals("rightHeldItem") && !mainHand.isEmpty()) {
@@ -39,4 +39,6 @@ public class SoulmouldEntityRenderer extends GeoEntityRenderer<SoulmouldEntity> 
         }
         super.renderRecursively(bone, stack, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     }
+
+ */
 }

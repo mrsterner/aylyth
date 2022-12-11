@@ -23,30 +23,32 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.server.ServerConfigHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.tag.ItemTags;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.Arm;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib.core.animatable.GeoAnimatable;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public class BoneflyEntity extends HostileEntity implements IAnimatable, TameableHostileEntity {
-    private final AnimationFactory factory = new AnimationFactory(this);
+public class BoneflyEntity extends HostileEntity implements GeoAnimatable, TameableHostileEntity {
+    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
     protected static final TrackedData<Boolean> DORMANT = DataTracker.registerData(BoneflyEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
     public static final TrackedData<Integer> ACTION_STATE = DataTracker.registerData(BoneflyEntity.class, TrackedDataHandlerRegistry.INTEGER);
     private static final TrackedData<Optional<UUID>> OWNER_UUID = DataTracker.registerData(BoneflyEntity.class, TrackedDataHandlerRegistry.OPTIONAL_UUID);
@@ -128,7 +130,7 @@ public class BoneflyEntity extends HostileEntity implements IAnimatable, Tameabl
         playSound(SoundEvents.ENTITY_ENDER_DRAGON_FLAP, 1f, 1);
     }
 
-    @Override
+
     protected boolean hasWings() {
         return this.isInAir();
     }
@@ -345,63 +347,8 @@ public class BoneflyEntity extends HostileEntity implements IAnimatable, Tameabl
         return this.getFirstPassenger() instanceof LivingEntity;
     }
 
-    @Override
-    public void registerControllers(AnimationData animationData) {
-        animationData.addAnimationController(new AnimationController<>(this, "wingController", 5, this::wingPredicate));
-        animationData.addAnimationController(new AnimationController<>(this, "idleController", 1, this::idlePredicate));
-        animationData.addAnimationController(new AnimationController<>(this, "stabController", 5, this::stabPredicate));
-    }
-    private <E extends IAnimatable> PlayState wingPredicate(AnimationEvent<E> event) {
-        AnimationBuilder animationBuilder = new AnimationBuilder();
-        if (this.isInAir()) {
-            animationBuilder.addAnimation("idleFly", true);
-        } else {
-            if(event.isMoving()) {
-                animationBuilder.addAnimation("walkGround", true);
-            } else {
-                animationBuilder.addAnimation("idleGround", true);
-            }
-        }
 
-        if(!animationBuilder.getRawAnimationList().isEmpty()) {
-            event.getController().setAnimation(animationBuilder);
-        }
-        return PlayState.CONTINUE;
-    }
-    private <E extends IAnimatable> PlayState stabPredicate(AnimationEvent<E> event) {
-        AnimationBuilder animationBuilder = new AnimationBuilder();
-        if (this.getActionState() == 2) {
-            animationBuilder.addAnimation("stabIdle", true);
-        } else if(this.getActionState() == 1) {
-            animationBuilder.addAnimation("stab", false);
-        } else {
-            return PlayState.STOP;
-        }
 
-        if(!animationBuilder.getRawAnimationList().isEmpty()) {
-            event.getController().setAnimation(animationBuilder);
-        }
-        return PlayState.CONTINUE;
-    }
-    private <E extends IAnimatable> PlayState idlePredicate(AnimationEvent<E> event) {
-        AnimationBuilder animationBuilder = new AnimationBuilder();
-        if(this.isDormant()) {
-            animationBuilder.addAnimation("idleDormant", true);
-        } else if(this.hurtTime > 0 || this.deathTime > 0) {
-            animationBuilder.addAnimation("hurt", true);
-        } else {
-            return PlayState.STOP;
-        }
-        if(!animationBuilder.getRawAnimationList().isEmpty()) {
-            event.getController().setAnimation(animationBuilder);
-        }
-        return PlayState.CONTINUE;
-    }
-
-    @Override
-    public AnimationFactory getFactory() {
-        return factory;
-    }
 
     @Override
     public UUID getOwnerUuid() {
@@ -442,5 +389,62 @@ public class BoneflyEntity extends HostileEntity implements IAnimatable, Tameabl
     @Override
     public void setTamed(boolean tamed) {
 
+    }
+
+
+
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+        controllers.add(
+                new AnimationController<>(this, "Body", 1, this::poseBody),
+                new AnimationController<>(this, "Wings", 5, this::poseWings),
+                new AnimationController<>(this, "Stab", 5, this::poseStab)
+        );
+
+    }
+
+    private <T extends GeoAnimatable> PlayState poseStab(AnimationState<T> state) {
+        if (this.getActionState() == 2) {
+            state.setAnimation(RawAnimation.begin().thenLoop("stabIdle"));
+        } else if(this.getActionState() == 1) {
+            state.setAnimation(RawAnimation.begin().thenLoop("stab"));
+        } else {
+            return PlayState.STOP;
+        }
+        return PlayState.CONTINUE;
+    }
+
+    private <T extends GeoAnimatable> PlayState poseWings(AnimationState<T> state) {
+        if (this.isInAir()) {
+            state.setAnimation(RawAnimation.begin().thenLoop("idleFly"));
+        } else {
+            if(state.isMoving()) {
+                state.setAnimation(RawAnimation.begin().thenLoop("walkGround"));
+            } else {
+                state.setAnimation(RawAnimation.begin().thenLoop("idleGround"));
+            }
+        }
+        return PlayState.CONTINUE;
+    }
+
+    private <T extends GeoAnimatable> PlayState poseBody(AnimationState<T> state) {
+        if(this.isDormant()) {
+            state.setAnimation(RawAnimation.begin().thenLoop("idleDormant"));
+        } else if(this.hurtTime > 0 || this.deathTime > 0) {
+            state.setAnimation(RawAnimation.begin().thenLoop("hurt"));
+        } else {
+            return PlayState.STOP;
+        }
+        return PlayState.CONTINUE;
+    }
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return cache;
+    }
+
+    @Override
+    public double getTick(Object o) {
+        return ((Entity)o).age;
     }
 }

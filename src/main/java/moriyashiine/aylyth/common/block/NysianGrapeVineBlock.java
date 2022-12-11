@@ -20,6 +20,7 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldView;
 
 public class NysianGrapeVineBlock extends VineBlock implements Fertilizable {
 	public static final IntProperty AGE = IntProperty.of("age", 0, 3);
@@ -49,11 +50,12 @@ public class NysianGrapeVineBlock extends VineBlock implements Fertilizable {
 		}
 	}
 	
+
 	@Override
-	public boolean isFertilizable(BlockView world, BlockPos pos, BlockState state, boolean isClient) {
+	public boolean isFertilizable(WorldView world, BlockPos pos, BlockState state, boolean isClient) {
 		return state.get(AGE) < 3;
 	}
-	
+
 	@Override
 	public boolean canGrow(World world, Random random, BlockPos pos, BlockState state) {
 		return state.get(AGE) < 3;

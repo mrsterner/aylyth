@@ -5,13 +5,10 @@ import moriyashiine.aylyth.common.entity.mob.ElderAylythianEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
-import software.bernie.geckolib3.model.provider.data.EntityModelData;
+import software.bernie.geckolib.model.GeoModel;
 
 @Environment(EnvType.CLIENT)
-public class ElderAylythianEntityModel extends AnimatedGeoModel<ElderAylythianEntity> {
+public class ElderAylythianEntityModel extends GeoModel<ElderAylythianEntity> {
 	private static final Identifier MODEL_LOCATION = new Identifier(Aylyth.MOD_ID, "geo/elder_aylythian.geo.json");
 	private static Identifier[] TEXTURE_LOCATIONS;
 	private static final Identifier ANIMATION_FILE_LOCATION = new Identifier(Aylyth.MOD_ID, "animations/entity/elder_aylythian.animation.json");
@@ -36,7 +33,8 @@ public class ElderAylythianEntityModel extends AnimatedGeoModel<ElderAylythianEn
 	public Identifier getAnimationResource(ElderAylythianEntity animatable) {
 		return ANIMATION_FILE_LOCATION;
 	}
-	
+
+	/*
 	@Override
 	public void setLivingAnimations(ElderAylythianEntity entity, Integer uniqueID, AnimationEvent customPredicate) {
 		super.setLivingAnimations(entity, uniqueID, customPredicate);
@@ -47,4 +45,6 @@ public class ElderAylythianEntityModel extends AnimatedGeoModel<ElderAylythianEn
 			head.setRotationY(extraData.netHeadYaw * ((float) Math.PI / 180F));
 		}
 	}
+
+	 */
 }

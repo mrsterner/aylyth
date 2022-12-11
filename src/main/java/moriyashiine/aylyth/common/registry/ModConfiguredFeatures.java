@@ -10,10 +10,10 @@ import moriyashiine.aylyth.common.world.generator.treedecorator.GrapeVineDecorat
 import moriyashiine.aylyth.common.world.generator.trunkplacer.*;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.collection.DataPool;
 import net.minecraft.util.math.intprovider.ConstantIntProvider;
-import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.gen.feature.*;
 import net.minecraft.world.gen.feature.size.TwoLayersFeatureSize;
 import net.minecraft.world.gen.foliage.BushFoliagePlacer;

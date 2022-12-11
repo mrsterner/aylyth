@@ -3,9 +3,9 @@ package moriyashiine.aylyth.client.model.entity;
 import moriyashiine.aylyth.common.Aylyth;
 import moriyashiine.aylyth.common.entity.mob.TulpaEntity;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.model.AnimatedGeoModel;
+import software.bernie.geckolib.model.GeoModel;
 
-public class TulpaEntityModel extends AnimatedGeoModel<TulpaEntity> {
+public class TulpaEntityModel extends GeoModel<TulpaEntity> {
 
 
     public Identifier getModelResource(TulpaEntity object) {

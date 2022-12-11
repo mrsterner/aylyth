@@ -9,11 +9,12 @@ import net.fabricmc.fabric.api.registry.FlammableBlockRegistry;
 import net.minecraft.block.*;
 import net.minecraft.block.sapling.LargeTreeSaplingGenerator;
 import net.minecraft.block.sapling.SaplingGenerator;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.random.Random;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,7 +24,7 @@ public class ModBlocks {
 
 	public static final Material STREWN_LEAVES = new Material.Builder(MapColor.DARK_GREEN).notSolid().allowsMovement().destroyedByPiston().replaceable().build();
 
-	public static final WoodSuite YMPE_BLOCKS = WoodSuite.of(new Identifier(Aylyth.MOD_ID, "ympe"), WoodSuite.CopySettingsSet.DEFAULT_SETTINGS_SET, Registry.BLOCK, MapColor.BROWN, new LargeTreeSaplingGenerator() {
+	public static final WoodSuite YMPE_BLOCKS = WoodSuite.of(new Identifier(Aylyth.MOD_ID, "ympe"), WoodSuite.CopySettingsSet.DEFAULT_SETTINGS_SET, Registries.BLOCK, MapColor.BROWN, new LargeTreeSaplingGenerator() {
 		@Nullable
 		@Override
 		protected RegistryEntry<? extends ConfiguredFeature<?, ?>> getLargeTreeFeature(Random random) {
@@ -39,7 +40,7 @@ public class ModBlocks {
 	public static final Block FRUIT_BEARING_YMPE_LOG = new FruitBearingYmpeLogBlock();
 	public static final Block YMPE_LEAVES = BlocksAccessor.callCreateLeavesBlock(BlockSoundGroup.GRASS);
 
-	public static final WoodSuite POMEGRANATE_BLOCKS = WoodSuite.of(new Identifier(Aylyth.MOD_ID, "pomegranate"), WoodSuite.CopySettingsSet.DEFAULT_SETTINGS_SET, Registry.BLOCK, MapColor.DARK_RED, new SaplingGenerator() {
+	public static final WoodSuite POMEGRANATE_BLOCKS = WoodSuite.of(new Identifier(Aylyth.MOD_ID, "pomegranate"), WoodSuite.CopySettingsSet.DEFAULT_SETTINGS_SET, Registries.BLOCK, MapColor.DARK_RED, new SaplingGenerator() {
 		@Nullable
 		@Override
 		protected RegistryEntry<? extends ConfiguredFeature<?, ?>> getTreeFeature(Random random, boolean bees) {
@@ -48,7 +49,7 @@ public class ModBlocks {
 	});
 	public static final Block POMEGRANATE_LEAVES = new PomegranateLeavesBlock(copyOf(Blocks.OAK_LEAVES));
 
-	public static final WoodSuite WRITHEWOOD_BLOCKS = WoodSuite.of(new Identifier(Aylyth.MOD_ID, "writhewood"), WoodSuite.CopySettingsSet.DEFAULT_SETTINGS_SET, Registry.BLOCK, MapColor.OAK_TAN, new SaplingGenerator() {
+	public static final WoodSuite WRITHEWOOD_BLOCKS = WoodSuite.of(new Identifier(Aylyth.MOD_ID, "writhewood"), WoodSuite.CopySettingsSet.DEFAULT_SETTINGS_SET, Registries.BLOCK, MapColor.OAK_TAN, new SaplingGenerator() {
 		@Nullable
 		@Override
 		protected RegistryEntry<? extends ConfiguredFeature<?, ?>> getTreeFeature(Random random, boolean bees) {
@@ -88,33 +89,33 @@ public class ModBlocks {
 	
 	public static void init() {
 		YMPE_BLOCKS.register();
-		Registry.register(Registry.BLOCK, new Identifier(Aylyth.MOD_ID, "fruit_bearing_ympe_log"), FRUIT_BEARING_YMPE_LOG);
-		Registry.register(Registry.BLOCK, new Identifier(Aylyth.MOD_ID, "ympe_leaves"), YMPE_LEAVES);
+		Registry.register(Registries.BLOCK, new Identifier(Aylyth.MOD_ID, "fruit_bearing_ympe_log"), FRUIT_BEARING_YMPE_LOG);
+		Registry.register(Registries.BLOCK, new Identifier(Aylyth.MOD_ID, "ympe_leaves"), YMPE_LEAVES);
 		POMEGRANATE_BLOCKS.register();
-		Registry.register(Registry.BLOCK, new Identifier(Aylyth.MOD_ID, "pomegranate_leaves"), POMEGRANATE_LEAVES);
+		Registry.register(Registries.BLOCK, new Identifier(Aylyth.MOD_ID, "pomegranate_leaves"), POMEGRANATE_LEAVES);
 		WRITHEWOOD_BLOCKS.register();
-		Registry.register(Registry.BLOCK, new Identifier(Aylyth.MOD_ID, "writhewood_leaves"), WRITHEWOOD_LEAVES);
-		Registry.register(Registry.BLOCK, new Identifier(Aylyth.MOD_ID, "aylyth_bush"), AYLYTH_BUSH);
-		Registry.register(Registry.BLOCK, new Identifier(Aylyth.MOD_ID, "antler_shoots"), ANTLER_SHOOTS);
-		Registry.register(Registry.BLOCK, new Identifier(Aylyth.MOD_ID, "gripweed"), GRIPWEED);
-		Registry.register(Registry.BLOCK, new Identifier(Aylyth.MOD_ID, "nysian_grape_vine"), NYSIAN_GRAPE_VINE);
-		Registry.register(Registry.BLOCK, new Identifier(Aylyth.MOD_ID, "marigolds"), MARIGOLD);
-		Registry.register(Registry.BLOCK, new Identifier(Aylyth.MOD_ID, "potted_marigolds"), MARIGOLD_POTTED);
-		Registry.register(Registry.BLOCK, new Identifier(Aylyth.MOD_ID, "jack_o_lantern_mushroom"), JACK_O_LANTERN_MUSHROOM);
-		Registry.register(Registry.BLOCK, new Identifier(Aylyth.MOD_ID, "shelf_jack_o_lantern_mushroom"), SHELF_JACK_O_LANTERN_MUSHROOM);
-		Registry.register(Registry.BLOCK, new Identifier(Aylyth.MOD_ID, "ghostcap_mushroom"), GHOSTCAP_MUSHROOM);
-		Registry.register(Registry.BLOCK, new Identifier(Aylyth.MOD_ID, "oak_strewn_leaves"), OAK_STREWN_LEAVES);
-		Registry.register(Registry.BLOCK, new Identifier(Aylyth.MOD_ID, "ympe_strewn_leaves"), YMPE_STREWN_LEAVES);
-		Registry.register(Registry.BLOCK, new Identifier(Aylyth.MOD_ID, "small_woody_growth"), SMALL_WOODY_GROWTH);
-		Registry.register(Registry.BLOCK, new Identifier(Aylyth.MOD_ID, "large_woody_growth"), LARGE_WOODY_GROWTH);
-		Registry.register(Registry.BLOCK, new Identifier(Aylyth.MOD_ID, "woody_growth_cache"), WOODY_GROWTH_CACHE);
-		Registry.register(Registry.BLOCK, new Identifier(Aylyth.MOD_ID, "oak_seep"), OAK_SEEP);
-		Registry.register(Registry.BLOCK, new Identifier(Aylyth.MOD_ID, "spruce_seep"), SPRUCE_SEEP);
-		Registry.register(Registry.BLOCK, new Identifier(Aylyth.MOD_ID, "dark_oak_seep"), DARK_OAK_SEEP);
-		Registry.register(Registry.BLOCK, new Identifier(Aylyth.MOD_ID, "ympe_seep"), YMPE_SEEP);
-		Registry.register(Registry.BLOCK, new Identifier(Aylyth.MOD_ID, "dark_woods_tiles"), DARK_WOODS_TILES);
-		Registry.register(Registry.BLOCK, new Identifier(Aylyth.MOD_ID, "soul_hearth"), SOUL_HEARTH);
-		Registry.register(Registry.BLOCK, new Identifier(Aylyth.MOD_ID, "vital_thurible"), VITAL_THURIBLE);
+		Registry.register(Registries.BLOCK, new Identifier(Aylyth.MOD_ID, "writhewood_leaves"), WRITHEWOOD_LEAVES);
+		Registry.register(Registries.BLOCK, new Identifier(Aylyth.MOD_ID, "aylyth_bush"), AYLYTH_BUSH);
+		Registry.register(Registries.BLOCK, new Identifier(Aylyth.MOD_ID, "antler_shoots"), ANTLER_SHOOTS);
+		Registry.register(Registries.BLOCK, new Identifier(Aylyth.MOD_ID, "gripweed"), GRIPWEED);
+		Registry.register(Registries.BLOCK, new Identifier(Aylyth.MOD_ID, "nysian_grape_vine"), NYSIAN_GRAPE_VINE);
+		Registry.register(Registries.BLOCK, new Identifier(Aylyth.MOD_ID, "marigolds"), MARIGOLD);
+		Registry.register(Registries.BLOCK, new Identifier(Aylyth.MOD_ID, "potted_marigolds"), MARIGOLD_POTTED);
+		Registry.register(Registries.BLOCK, new Identifier(Aylyth.MOD_ID, "jack_o_lantern_mushroom"), JACK_O_LANTERN_MUSHROOM);
+		Registry.register(Registries.BLOCK, new Identifier(Aylyth.MOD_ID, "shelf_jack_o_lantern_mushroom"), SHELF_JACK_O_LANTERN_MUSHROOM);
+		Registry.register(Registries.BLOCK, new Identifier(Aylyth.MOD_ID, "ghostcap_mushroom"), GHOSTCAP_MUSHROOM);
+		Registry.register(Registries.BLOCK, new Identifier(Aylyth.MOD_ID, "oak_strewn_leaves"), OAK_STREWN_LEAVES);
+		Registry.register(Registries.BLOCK, new Identifier(Aylyth.MOD_ID, "ympe_strewn_leaves"), YMPE_STREWN_LEAVES);
+		Registry.register(Registries.BLOCK, new Identifier(Aylyth.MOD_ID, "small_woody_growth"), SMALL_WOODY_GROWTH);
+		Registry.register(Registries.BLOCK, new Identifier(Aylyth.MOD_ID, "large_woody_growth"), LARGE_WOODY_GROWTH);
+		Registry.register(Registries.BLOCK, new Identifier(Aylyth.MOD_ID, "woody_growth_cache"), WOODY_GROWTH_CACHE);
+		Registry.register(Registries.BLOCK, new Identifier(Aylyth.MOD_ID, "oak_seep"), OAK_SEEP);
+		Registry.register(Registries.BLOCK, new Identifier(Aylyth.MOD_ID, "spruce_seep"), SPRUCE_SEEP);
+		Registry.register(Registries.BLOCK, new Identifier(Aylyth.MOD_ID, "dark_oak_seep"), DARK_OAK_SEEP);
+		Registry.register(Registries.BLOCK, new Identifier(Aylyth.MOD_ID, "ympe_seep"), YMPE_SEEP);
+		Registry.register(Registries.BLOCK, new Identifier(Aylyth.MOD_ID, "dark_woods_tiles"), DARK_WOODS_TILES);
+		Registry.register(Registries.BLOCK, new Identifier(Aylyth.MOD_ID, "soul_hearth"), SOUL_HEARTH);
+		Registry.register(Registries.BLOCK, new Identifier(Aylyth.MOD_ID, "vital_thurible"), VITAL_THURIBLE);
 
 		FlammableBlockRegistry flammableRegistry = FlammableBlockRegistry.getDefaultInstance();
 		flammableRegistry.add(YMPE_BLOCKS.strippedLog, 5, 5);

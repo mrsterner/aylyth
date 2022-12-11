@@ -42,20 +42,20 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.IAnimationTickable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib.core.animatable.GeoAnimatable;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
 import java.util.*;
 
-public class SoulmouldEntity extends HostileEntity implements TameableHostileEntity, IAnimatable, IAnimationTickable {
-    private final AnimationFactory factory = new AnimationFactory(this);
+public class SoulmouldEntity extends HostileEntity implements TameableHostileEntity, GeoAnimatable {
+    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
     protected static final TrackedData<Boolean> DORMANT = DataTracker.registerData(SoulmouldEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
     public static final TrackedData<Optional<BlockPos>> DORMANT_POS = DataTracker.registerData(SoulmouldEntity.class, TrackedDataHandlerRegistry.OPTIONAL_BLOCK_POS);
     public static final TrackedData<Integer> ATTACK_STATE = DataTracker.registerData(SoulmouldEntity.class, TrackedDataHandlerRegistry.INTEGER);
@@ -346,38 +346,11 @@ public class SoulmouldEntity extends HostileEntity implements TameableHostileEnt
     }
     @Override
     protected void playStepSound(BlockPos pos, BlockState state) {
-        if(world instanceof ServerWorld server)
-            server.getServer().getPlayerManager().sendToAround(null, this.getX(), this.getY(), this.getZ(), 32.0, server.getRegistryKey(), new PlaySoundS2CPacket(SoundEvents.ENTITY_IRON_GOLEM_STEP, this.getSoundCategory(), this.getX(), this.getY(), this.getZ(), 32.0f, 1.0f, 69L));
+        this.playSound(SoundEvents.ENTITY_IRON_GOLEM_STEP, 1.0F, 1.0F);
     }
 
 
-    @Override
-    public void registerControllers(AnimationData animationData) {
-        animationData.addAnimationController(new AnimationController<>(this, "controller", 5, this::predicate));
-    }
-    private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-        AnimationBuilder animationBuilder = new AnimationBuilder();
-        if (this.isDormant()) {
-            if (getAttackState() == 1) {
-                animationBuilder.addAnimation("soulmould_activate", false);
-            } else {
-                animationBuilder.addAnimation("soulmould_dormant", true);
-            }
-        } else if(this.getAttackState() == 2) {
-            animationBuilder.addAnimation("soulmould_dashing", true);
-        } else {
-            if (!this.hasVehicle() && event.isMoving()) {
-                animationBuilder.addAnimation("soulmould_walking", true);
-            } else {
-                animationBuilder.addAnimation("soulmould_idle", true);
-            }
-        }
 
-        if(!animationBuilder.getRawAnimationList().isEmpty()) {
-            event.getController().setAnimation(animationBuilder);
-        }
-        return PlayState.CONTINUE;
-    }
     public double getAngleBetweenEntities(Entity first, Entity second) {
         return Math.atan2(second.getZ() - first.getZ(), second.getX() - first.getX()) * (180 / Math.PI) + 90;
     }
@@ -402,10 +375,6 @@ public class SoulmouldEntity extends HostileEntity implements TameableHostileEnt
         return EntityGroup.UNDEAD;
     }
 
-    @Override
-    public AnimationFactory getFactory() {
-        return factory;
-    }
 
     public Optional<BlockPos> getDormantPos() {
         return getDataTracker().get(DORMANT_POS);
@@ -448,8 +417,40 @@ public class SoulmouldEntity extends HostileEntity implements TameableHostileEnt
         getDataTracker().set(DORMANT, rest);
     }
 
+
     @Override
-    public int tickTimer() {
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+        controllers.add(
+                new AnimationController<>(this, "Body", 1, this::poseBody)
+        );
+    }
+
+    private <T extends GeoAnimatable> PlayState poseBody(AnimationState<T> state) {
+        if (this.isDormant()) {
+            if (getAttackState() == 1) {
+                state.setAnimation(RawAnimation.begin().thenLoop("soulmould_activate"));
+            } else {
+                state.setAnimation(RawAnimation.begin().thenLoop("soulmould_dormant"));
+            }
+        } else if(this.getAttackState() == 2) {
+            state.setAnimation(RawAnimation.begin().thenLoop("soulmould_dashing"));
+        } else {
+            if (!this.hasVehicle() && state.isMoving()) {
+                state.setAnimation(RawAnimation.begin().thenLoop("soulmould_walking"));
+            } else {
+                state.setAnimation(RawAnimation.begin().thenLoop("soulmould_idle"));
+            }
+        }
+        return PlayState.CONTINUE;
+    }
+
+    @Override
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return null;
+    }
+
+    @Override
+    public double getTick(Object o) {
         return age;
     }
 

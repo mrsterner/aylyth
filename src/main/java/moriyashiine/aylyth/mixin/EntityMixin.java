@@ -3,9 +3,9 @@ package moriyashiine.aylyth.mixin;
 import moriyashiine.aylyth.common.block.IContextBlockSoundGroup;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundEvent;
-import net.minecraft.tag.BlockTags;
 import net.minecraft.util.math.BlockPos;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -21,7 +21,7 @@ public abstract class EntityMixin {
     public abstract void playSound(SoundEvent sound, float volume, float pitch);
 
     @Inject(method = "playStepSound", at = {@At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;playSound(Lnet/minecraft/sound/SoundEvent;FF)V")}, locals = LocalCapture.CAPTURE_FAILEXCEPTION, cancellable = true)
-    private void aylyth_playStepSound(BlockPos pos, BlockState state, CallbackInfo ci, BlockSoundGroup blockSoundGroup) {
+    private void aylyth_playStepSound(BlockPos pos, BlockState state, CallbackInfo ci, BlockState capturedBlockState, boolean bl, BlockSoundGroup blockSoundGroup) {
         var entity = (Entity)(Object)this;
         var world = entity.world;
         var blockState = world.getBlockState(pos.up());

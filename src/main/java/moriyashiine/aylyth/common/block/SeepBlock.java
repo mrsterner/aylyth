@@ -9,6 +9,8 @@ import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemPlacementContext;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.state.StateManager;
@@ -19,8 +21,6 @@ import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
@@ -57,7 +57,7 @@ public class SeepBlock extends Block implements BlockEntityProvider {
 		if (world instanceof ServerWorld serverWorld) {
 			if (entity.getPos().distanceTo(new Vec3d(pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F)) < 0.6F) {
 				ServerWorld aylyth = serverWorld.getServer().getWorld(ModDimensions.AYLYTH);
-				ServerWorld toWorld = entity.world == aylyth ? serverWorld.getServer().getWorld(RegistryKey.of(Registry.WORLD_KEY, DimensionTypes.OVERWORLD_ID)) : aylyth;
+				ServerWorld toWorld = entity.world == aylyth ? serverWorld.getServer().getWorld(RegistryKey.of(RegistryKeys.WORLD, DimensionTypes.OVERWORLD_ID)) : aylyth;
 				FabricDimensions.teleport(entity, toWorld, new TeleportTarget(Vec3d.of(AylythUtil.getSafePosition(toWorld, entity.getBlockPos().mutableCopy(), 0)), Vec3d.ZERO, entity.getHeadYaw(), entity.getPitch()));
 			}
 		}

@@ -7,13 +7,13 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.Frustum;
 import net.minecraft.client.render.entity.EntityRendererFactory;
-import software.bernie.geckolib3.renderers.geo.GeoEntityRenderer;
+import software.bernie.geckolib.renderer.GeoEntityRenderer;
 
 @Environment(EnvType.CLIENT)
 public class AylythianEntityRenderer extends GeoEntityRenderer<AylythianEntity> {
 	public AylythianEntityRenderer(EntityRendererFactory.Context ctx) {
 		super(ctx, new AylythianEntityModel());
-		addLayer(new AylythianGlowLayerRenderer(this));
+		addRenderLayer(new AylythianGlowLayerRenderer(this));
 	}
 	
 	@Override

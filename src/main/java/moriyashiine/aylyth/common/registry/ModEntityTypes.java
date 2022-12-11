@@ -11,8 +11,9 @@ import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.SpawnRestriction;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.Heightmap;
 
 public class ModEntityTypes {
@@ -39,15 +40,15 @@ public class ModEntityTypes {
 		FabricDefaultAttributeRegistry.register(SCION, ScionEntity.createAttributes());
 		FabricDefaultAttributeRegistry.register(RIPPED_SOUL, RippedSoulEntity.createVexAttributes());
 		// TODO FabricDefaultAttributeRegistry.register(TULPA, TulpaEntity.createTulpaAttributes());
-		Registry.register(Registry.ENTITY_TYPE, new Identifier(Aylyth.MOD_ID, "pilot_light"), PILOT_LIGHT);
-		Registry.register(Registry.ENTITY_TYPE, new Identifier(Aylyth.MOD_ID, "aylythian"), AYLYTHIAN);
-		Registry.register(Registry.ENTITY_TYPE, new Identifier(Aylyth.MOD_ID, "elder_aylythian"), ELDER_AYLYTHIAN);
-		Registry.register(Registry.ENTITY_TYPE, new Identifier(Aylyth.MOD_ID, "ympe_lance"), YMPE_LANCE);
-		Registry.register(Registry.ENTITY_TYPE, new Identifier(Aylyth.MOD_ID, "soulmould"), SOULMOULD);
-		Registry.register(Registry.ENTITY_TYPE, new Identifier(Aylyth.MOD_ID, "bonefly"), BONEFLY);
-		Registry.register(Registry.ENTITY_TYPE, new Identifier(Aylyth.MOD_ID, "scion"), SCION);
-		Registry.register(Registry.ENTITY_TYPE, new Identifier(Aylyth.MOD_ID, "root_prop"), ROOT_PROP);
-		Registry.register(Registry.ENTITY_TYPE, new Identifier(Aylyth.MOD_ID, "ripped_soul"), RIPPED_SOUL);
+		Registry.register(Registries.ENTITY_TYPE, new Identifier(Aylyth.MOD_ID, "pilot_light"), PILOT_LIGHT);
+		Registry.register(Registries.ENTITY_TYPE, new Identifier(Aylyth.MOD_ID, "aylythian"), AYLYTHIAN);
+		Registry.register(Registries.ENTITY_TYPE, new Identifier(Aylyth.MOD_ID, "elder_aylythian"), ELDER_AYLYTHIAN);
+		Registry.register(Registries.ENTITY_TYPE, new Identifier(Aylyth.MOD_ID, "ympe_lance"), YMPE_LANCE);
+		Registry.register(Registries.ENTITY_TYPE, new Identifier(Aylyth.MOD_ID, "soulmould"), SOULMOULD);
+		Registry.register(Registries.ENTITY_TYPE, new Identifier(Aylyth.MOD_ID, "bonefly"), BONEFLY);
+		Registry.register(Registries.ENTITY_TYPE, new Identifier(Aylyth.MOD_ID, "scion"), SCION);
+		Registry.register(Registries.ENTITY_TYPE, new Identifier(Aylyth.MOD_ID, "root_prop"), ROOT_PROP);
+		Registry.register(Registries.ENTITY_TYPE, new Identifier(Aylyth.MOD_ID, "ripped_soul"), RIPPED_SOUL);
 		// TODO Registry.register(Registry.ENTITY_TYPE, new Identifier(Aylyth.MOD_ID, "tulpa"), TULPA);
 		
 		SpawnRestriction.register(PILOT_LIGHT, SpawnRestriction.Location.NO_RESTRICTIONS, Heightmap.Type.MOTION_BLOCKING, PilotLightEntity::canSpawn);

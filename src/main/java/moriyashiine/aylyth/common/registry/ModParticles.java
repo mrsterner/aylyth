@@ -15,8 +15,9 @@ import net.minecraft.client.texture.AbstractTexture;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.texture.TextureManager;
 import net.minecraft.particle.DefaultParticleType;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import org.lwjgl.opengl.GL11;
 
 public class ModParticles {
@@ -24,8 +25,8 @@ public class ModParticles {
 	public static final DefaultParticleType AMBIENT_PILOT_LIGHT = FabricParticleTypes.simple(true);
 	
 	public static void init() {
-		Registry.register(Registry.PARTICLE_TYPE, new Identifier(Aylyth.MOD_ID, "pilot_light"), PILOT_LIGHT);
-		Registry.register(Registry.PARTICLE_TYPE, new Identifier(Aylyth.MOD_ID, "ambient_pilot_light"), AMBIENT_PILOT_LIGHT);
+		Registry.register(Registries.PARTICLE_TYPE, new Identifier(Aylyth.MOD_ID, "pilot_light"), PILOT_LIGHT);
+		Registry.register(Registries.PARTICLE_TYPE, new Identifier(Aylyth.MOD_ID, "ambient_pilot_light"), AMBIENT_PILOT_LIGHT);
 	}
 	
 	@Environment(EnvType.CLIENT)

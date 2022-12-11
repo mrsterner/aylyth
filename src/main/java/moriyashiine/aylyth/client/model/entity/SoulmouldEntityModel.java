@@ -3,12 +3,9 @@ package moriyashiine.aylyth.client.model.entity;
 import moriyashiine.aylyth.common.Aylyth;
 import moriyashiine.aylyth.common.entity.mob.SoulmouldEntity;
 import net.minecraft.util.Identifier;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.processor.IBone;
-import software.bernie.geckolib3.model.AnimatedTickingGeoModel;
-import software.bernie.geckolib3.model.provider.data.EntityModelData;
+import software.bernie.geckolib.model.GeoModel;
 
-public class SoulmouldEntityModel extends AnimatedTickingGeoModel<SoulmouldEntity> {
+public class SoulmouldEntityModel extends GeoModel<SoulmouldEntity> {
     public SoulmouldEntityModel() {
     }
 
@@ -24,6 +21,7 @@ public class SoulmouldEntityModel extends AnimatedTickingGeoModel<SoulmouldEntit
         return new Identifier(Aylyth.MOD_ID, "animations/entity/soulmould.animation.json");
     }
 
+    /*TODO
     public void codeAnimations(SoulmouldEntity entity, Integer uniqueID, AnimationEvent<?> customPredicate) {
         super.codeAnimations(entity, uniqueID, customPredicate);
         IBone head = this.getAnimationProcessor().getBone("head");
@@ -34,4 +32,6 @@ public class SoulmouldEntityModel extends AnimatedTickingGeoModel<SoulmouldEntit
         }
 
     }
+
+     */
 }

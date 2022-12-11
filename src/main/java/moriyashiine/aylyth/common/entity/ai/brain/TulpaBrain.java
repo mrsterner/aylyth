@@ -65,7 +65,7 @@ public class TulpaBrain {
                        new StayAboveWaterTask(0.6f),
                         new LookAroundTask(45, 90),
                         new WanderAroundTask(),
-                        new UpdateAttackTargetTask<>(TulpaBrain::getAttackTarget)
+                        UpdateAttackTargetTask.create(TulpaBrain::getAttackTarget)
                 )
         );
     }
@@ -76,8 +76,8 @@ public class TulpaBrain {
                 ImmutableList.of(
                         Pair.of(0, new RandomTask<>(
                                 ImmutableList.of(
-                                        Pair.of(new StrollTask(0.6F), 2),
-                                        Pair.of(new ConditionalTask<>(livingEntity -> true, new GoTowardsLookTarget(0.6F, 3)), 2),
+                                        Pair.of(StrollTask.create(0.6F), 2),
+                                        Pair.of(TaskTriggerer.runIf(livingEntity -> true, GoTowardsLookTargetTask.create(0.6F, 3)), 2),
                                         Pair.of(new WaitTask(30, 60), 1)
                                 )))
                 )
@@ -89,10 +89,10 @@ public class TulpaBrain {
                 Activity.FIGHT,
                 10,
                 ImmutableList.of(
-                        new ForgetAttackTargetTask<>(entity -> !tulpaEntity.isEnemy(entity), TulpaBrain::setTargetInvalid, false),
-                        new FollowMobTask(mob -> isTarget(tulpaEntity, mob), (float)tulpaEntity.getAttributeValue(EntityAttributes.GENERIC_FOLLOW_RANGE)),
-                        new RangedApproachTask(1.2F),
-                        new MeleeAttackTask(18)
+                    ForgetAttackTargetTask.create(entity -> !tulpaEntity.isEnemy(entity), TulpaBrain::setTargetInvalid, false),
+                    FollowMobTask.create(mob -> isTarget(tulpaEntity, mob), (float)tulpaEntity.getAttributeValue(EntityAttributes.GENERIC_FOLLOW_RANGE)),
+                    RangedApproachTask.create(1.2F),
+                    MeleeAttackTask.create(18)
                 ),
                 MemoryModuleType.ATTACK_TARGET
         );

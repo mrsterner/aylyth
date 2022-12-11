@@ -60,7 +60,8 @@ public class RippedSoulEntity extends HostileEntity {
         return super.damage(source, amount);
     }
 
-    @Override
+
+
     public boolean hasWings() {
         return this.age % MathHelper.ceil(3.9269907f) == 0;
     }

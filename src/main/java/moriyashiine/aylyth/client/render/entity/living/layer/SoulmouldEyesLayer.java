@@ -4,25 +4,27 @@ import moriyashiine.aylyth.common.Aylyth;
 import moriyashiine.aylyth.common.entity.mob.SoulmouldEntity;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
-import software.bernie.geckolib3.renderers.geo.GeoLayerRenderer;
-import software.bernie.geckolib3.renderers.geo.IGeoRenderer;
+import software.bernie.geckolib.cache.object.BakedGeoModel;
+import software.bernie.geckolib.renderer.GeoRenderer;
+import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
 
-public class SoulmouldEyesLayer extends GeoLayerRenderer<SoulmouldEntity> {
-    public SoulmouldEyesLayer(IGeoRenderer<SoulmouldEntity> entityRendererIn) {
+public class SoulmouldEyesLayer extends GeoRenderLayer<SoulmouldEntity> {
+    public SoulmouldEyesLayer(GeoRenderer<SoulmouldEntity> entityRendererIn) {
         super(entityRendererIn);
     }
 
     @Override
-    public void render(MatrixStack matrixStackIn, VertexConsumerProvider bufferIn, int packedLightIn, SoulmouldEntity entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void render(MatrixStack poseStack, SoulmouldEntity animatable, BakedGeoModel bakedModel, RenderLayer renderType, VertexConsumerProvider bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
+        super.render(poseStack, animatable, bakedModel, renderType, bufferSource, buffer, partialTick, packedLight, packedOverlay);
         Identifier location = new Identifier(Aylyth.MOD_ID, "textures/entity/living/mould/eyes.png");
         RenderLayer armor = RenderLayer.getEyes(location);
-        this.getRenderer().render(this.getEntityModel().getModel(this.getEntityModel().getModelResource(entitylivingbaseIn)), entitylivingbaseIn, partialTicks, armor, matrixStackIn, bufferIn, bufferIn.getBuffer(armor), -packedLightIn, OverlayTexture.DEFAULT_UV, 1.0F, 1.0F, 1.0F, MathHelper.clamp(120.0F - (float)packedLightIn, 0.0F, 120.0F) / 160.0F);
-
+        getRenderer().reRender(getDefaultBakedModel(animatable), poseStack, bufferSource, animatable, armor,
+                bufferSource.getBuffer(armor), partialTick, packedLight, OverlayTexture.DEFAULT_UV,
+                1, 1, 1, 1);
     }
-
-
 }

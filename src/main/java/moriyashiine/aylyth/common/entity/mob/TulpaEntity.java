@@ -19,20 +19,21 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.world.World;
-import software.bernie.geckolib3.core.IAnimatable;
-import software.bernie.geckolib3.core.PlayState;
-import software.bernie.geckolib3.core.builder.AnimationBuilder;
-import software.bernie.geckolib3.core.controller.AnimationController;
-import software.bernie.geckolib3.core.event.predicate.AnimationEvent;
-import software.bernie.geckolib3.core.manager.AnimationData;
-import software.bernie.geckolib3.core.manager.AnimationFactory;
+import software.bernie.geckolib.core.animatable.GeoAnimatable;
+import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
+import software.bernie.geckolib.core.animation.AnimatableManager;
+import software.bernie.geckolib.core.animation.AnimationController;
+import software.bernie.geckolib.core.animation.AnimationState;
+import software.bernie.geckolib.core.animation.RawAnimation;
+import software.bernie.geckolib.core.object.PlayState;
+import software.bernie.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.UUID;
 
-public class TulpaEntity extends HostileEntity implements TameableHostileEntity, IAnimatable {
-    private final AnimationFactory factory = new AnimationFactory(this);
+public class TulpaEntity extends HostileEntity implements TameableHostileEntity, GeoAnimatable {
+    private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
     private static final TrackedData<Byte> TAMEABLE = DataTracker.registerData(TulpaEntity.class, TrackedDataHandlerRegistry.BYTE);
     public static final TrackedData<Integer> ACTION_STATE = DataTracker.registerData(TulpaEntity.class, TrackedDataHandlerRegistry.INTEGER);
     private static final TrackedData<Optional<UUID>> OWNER_UUID = DataTracker.registerData(TulpaEntity.class, TrackedDataHandlerRegistry.OPTIONAL_UUID);
@@ -190,30 +191,36 @@ public class TulpaEntity extends HostileEntity implements TameableHostileEntity,
         this.onTamedChanged();
     }
 
-    @Override
-    public void registerControllers(AnimationData animationData) {
-        animationData.addAnimationController(new AnimationController<>(this, "controller", 5, this::predicate));
-    }
-    private <E extends IAnimatable> PlayState predicate(AnimationEvent<E> event) {
-        AnimationBuilder builder = new AnimationBuilder();
-        if(event.isMoving()){
-            builder.addAnimation("tulpa_walking", true);
-        }else{
-            builder.addAnimation("tulpa_idle", true);
-        }
 
-        if(!builder.getRawAnimationList().isEmpty()) {
-            event.getController().setAnimation(builder);
+
+
+    public boolean isEnemy(LivingEntity entity) {
+        return true;//TODO
+    }
+
+    @Override
+    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
+        controllers.add(
+                new AnimationController<>(this, "Body", 0, this::poseBody)
+        );
+    }
+
+    private <T extends GeoAnimatable> PlayState poseBody(AnimationState<T> state) {
+        if(state.isMoving()){
+            state.setAnimation(RawAnimation.begin().thenLoop("tulpa_walking"));
+        }else{
+            state.setAnimation(RawAnimation.begin().thenLoop("tulpa_idle"));
         }
         return PlayState.CONTINUE;
     }
 
     @Override
-    public AnimationFactory getFactory() {
-        return factory;
+    public AnimatableInstanceCache getAnimatableInstanceCache() {
+        return cache;
     }
 
-    public boolean isEnemy(LivingEntity entity) {
-        return true;//TODO
+    @Override
+    public double getTick(Object o) {
+        return age;
     }
 }

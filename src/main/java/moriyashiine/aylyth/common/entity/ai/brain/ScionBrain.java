@@ -75,11 +75,11 @@ public class ScionBrain {
                 Activity.CORE,
                 0,
                 ImmutableList.of(
-                        new MemoryTransferTask<>(VALID_ENTITY, ModMemoryTypes.NEAREST_VISIBLE_PLAYER_NEMESIS, MemoryModuleType.AVOID_TARGET, GO_TO_NEMESIS_MEMORY_DURATION),
+                        MemoryTransferTask.create(VALID_ENTITY, ModMemoryTypes.NEAREST_VISIBLE_PLAYER_NEMESIS, MemoryModuleType.AVOID_TARGET, GO_TO_NEMESIS_MEMORY_DURATION),
                         new StayAboveWaterTask(0.6f),
                         new LookAroundTask(45, 90),
                         new WanderAroundTask(),
-                        new UpdateAttackTargetTask<>(ScionBrain::getAttackTarget)
+                        UpdateAttackTargetTask.create(ScionBrain::getAttackTarget)
                 )
         );
     }
@@ -90,8 +90,8 @@ public class ScionBrain {
                 ImmutableList.of(
                         Pair.of(0, new RandomTask<>(
                                 ImmutableList.of(
-                                        Pair.of(new StrollTask(0.6F), 2),
-                                        Pair.of(new ConditionalTask<>(livingEntity -> true, new GoTowardsLookTarget(0.6F, 3)), 2),
+                                        Pair.of(StrollTask.create(0.6F), 2),
+                                        Pair.of(TaskTriggerer.runIf(livingEntity -> true, GoTowardsLookTargetTask.create(0.6F, 3)), 2),
                                         Pair.of(new WaitTask(30, 60), 1)
                                 )))
                 )
@@ -103,10 +103,10 @@ public class ScionBrain {
                 Activity.FIGHT,
                 10,
                 ImmutableList.of(
-                        new ForgetAttackTargetTask<>(entity -> !scionEntity.isEnemy(entity), ScionBrain::setTargetInvalid, false),
-                        new FollowMobTask(mob -> isTarget(scionEntity, mob), (float)scionEntity.getAttributeValue(EntityAttributes.GENERIC_FOLLOW_RANGE)),
-                        new RangedApproachTask(1.2F),
-                        new MeleeAttackTask(18)
+                        ForgetAttackTargetTask.create(entity -> !scionEntity.isEnemy(entity), ScionBrain::setTargetInvalid, false),
+                        FollowMobTask.create((entity) -> isTarget(scionEntity, entity), (float)scionEntity.getAttributeValue(EntityAttributes.GENERIC_FOLLOW_RANGE)),
+                        RangedApproachTask.create(1.2F),
+                        MeleeAttackTask.create(18)
                 ),
                 MemoryModuleType.ATTACK_TARGET
         );
